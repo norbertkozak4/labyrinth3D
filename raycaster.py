@@ -7,8 +7,8 @@ class RayCaster:
     
     def __init__(self, screen):
         self.screen = screen
-        self.screen_width = WINDOW_WIDTH
-        self.screen_height = WINDOW_HEIGHT
+        self.screen_width = screen.get_width()
+        self.screen_height = screen.get_height()
         
     def cast_rays(self, player, maze):
         """Sugarak kilövése és 3D nézet renderelése"""
@@ -17,10 +17,10 @@ class RayCaster:
         
         # FOV számítás
         fov_rad = math.radians(FOV)
-        ray_angle_step = fov_rad / NUM_RAYS
+        ray_angle_step = fov_rad / self.screen_width
         start_angle = player.angle - fov_rad / 2
         
-        for i in range(NUM_RAYS):
+        for i in range(self.screen_width):
             ray_angle = start_angle + i * ray_angle_step
             
             # Sugár kilövése

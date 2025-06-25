@@ -1,7 +1,8 @@
 # Ablak beállítások
-WINDOW_WIDTH = 1024
-WINDOW_HEIGHT = 768
+WINDOW_WIDTH = 1920  # Fullscreen width (will be overridden)
+WINDOW_HEIGHT = 1080  # Fullscreen height (will be overridden)
 FPS = 60
+FULLSCREEN = True
 
 # Játék konstansok
 MAP_SIZE = 32

@@ -66,9 +66,10 @@ class GameState:
     
     def _draw_minimap(self, screen):
         """Minimap rajzolása"""
+        screen_width = screen.get_width()
         minimap_size = 150
         cell_size = minimap_size // MAP_SIZE
-        minimap_x = WINDOW_WIDTH - minimap_size - 10
+        minimap_x = screen_width - minimap_size - 10
         minimap_y = 10
         
         # Háttér
@@ -106,17 +107,19 @@ class GameState:
     
     def _draw_win_message(self, screen):
         """Nyerés üzenet rajzolása"""
-        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        screen_width = screen.get_width()
+        screen_height = screen.get_height()
+        overlay = pygame.Surface((screen_width, screen_height))
         overlay.set_alpha(128)
         overlay.fill(BLACK)
         screen.blit(overlay, (0, 0))
         
         win_text = self.font.render("Congratulations! You've escaped the maze!", True, WHITE)
-        win_rect = win_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        win_rect = win_text.get_rect(center=(screen_width // 2, screen_height // 2))
         screen.blit(win_text, win_rect)
         
         return_text = self.font.render("Returning to menu...", True, WHITE)
-        return_rect = return_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 50))
+        return_rect = return_text.get_rect(center=(screen_width // 2, screen_height // 2 + 50))
         screen.blit(return_text, return_rect)
     
     def reset_game(self):
