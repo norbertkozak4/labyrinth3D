@@ -83,19 +83,26 @@ class GameState:
                                (minimap_x + x * cell_size, minimap_y + y * cell_size,
                                 cell_size, cell_size))
         
-        # Játékos pozíció
-        player_map_x, player_map_y = self.player.get_map_position()
-        pygame.draw.circle(screen, RED,
-                          (minimap_x + player_map_x * cell_size + cell_size // 2,
-                           minimap_y + player_map_y * cell_size + cell_size // 2),
-                          cell_size // 4)
-        
-        # Cél pozíció
+        # Cél pozíció (zöld kör)
         end_x, end_y = self.maze.get_end_position()
         pygame.draw.circle(screen, GREEN,
                           (minimap_x + end_x * cell_size + cell_size // 2,
                            minimap_y + end_y * cell_size + cell_size // 2),
-                          cell_size // 4)
+                          max(2, cell_size // 4))
+        
+        # Játékos pozíció és irány
+        player_map_x, player_map_y = self.player.get_map_position()
+        player_center_x = minimap_x + player_map_x * cell_size + cell_size // 2
+        player_center_y = minimap_y + player_map_y * cell_size + cell_size // 2
+        
+        # Játékos pozíció (piros kör)
+        pygame.draw.circle(screen, RED, (player_center_x, player_center_y), max(2, cell_size // 4))
+        
+        # Játékos nézési irány (vonal)
+        direction_length = cell_size // 2
+        end_x = player_center_x + math.cos(self.player.angle) * direction_length
+        end_y = player_center_y + math.sin(self.player.angle) * direction_length
+        pygame.draw.line(screen, RED, (player_center_x, player_center_y), (end_x, end_y), 2)
     
     def _draw_win_message(self, screen):
         """Nyerés üzenet rajzolása"""
@@ -142,18 +149,18 @@ class GameStateManager:
     def change_state(self, state_name):
         """Állapot váltás"""
         if state_name in self.states:
-            # Ha játékból megyünk el, állítsuk vissza az egér láthatóságát
-            if self.current_state == "game" and state_name != "pause":
+            # Egér láthatóság beállítása állapot szerint
+            if state_name in ["menu", "pause"]:
+                # Menükben látható az egér
                 pygame.mouse.set_visible(True)
                 pygame.event.set_grab(False)
-            
-            # Ha játékba megyünk, rejtük el az egeret
-            if state_name == "game":
+            elif state_name == "game":
+                # Játékban rejtett az egér
+                pygame.mouse.set_visible(False)
+                pygame.event.set_grab(True)
                 if self.current_state != "pause":  # Ha nem pause-ból jövünk, új játék
                     self.states["game"].reset_game()
                 else:  # Ha pause-ból jövünk, folytatás
-                    pygame.mouse.set_visible(False)
-                    pygame.event.set_grab(True)
                     self.states["game"].player.reset_mouse()
             
             self.current_state = state_name
